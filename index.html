@@ -972,27 +972,68 @@
         <a href="mailto:abzy.teano@gmail.com">↗ abzy.teano@gmail.com</a>
       </div>
     </div>
-    <div class="contact-form">
+    <form class="contact-form" action="https://formspree.io/f/xeewgaqr" method="POST" id="contact-form">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Your Name</label>
-          <input class="form-input" type="text" placeholder="John Smith">
+          <input class="form-input" type="text" name="name" placeholder="John Smith" required>
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input class="form-input" type="email" placeholder="john@company.com">
+          <input class="form-input" type="email" name="email" placeholder="john@company.com" required>
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">What do you want to automate?</label>
-        <textarea class="form-textarea" placeholder="Describe your current process and what you wish happened automatically..."></textarea>
+        <textarea class="form-textarea" name="message" placeholder="Describe your current process and what you wish happened automatically..." required></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Budget Range</label>
-        <input class="form-input" type="text" placeholder="e.g. $500–$2,000">
+        <input class="form-input" type="text" name="budget" placeholder="e.g. $500–$2,000">
       </div>
-      <button class="form-submit">Send Message →</button>
-    </div>
+      <button type="submit" class="form-submit" id="submit-btn">Send Message →</button>
+      <div id="form-success" style="display:none;font-family:'DM Mono',monospace;font-size:0.8rem;color:#c8f135;margin-top:1rem;letter-spacing:0.05em;">
+        ✓ Message sent! I'll get back to you within 24 hours.
+      </div>
+      <div id="form-error" style="display:none;font-family:'DM Mono',monospace;font-size:0.8rem;color:#ff6b6b;margin-top:1rem;letter-spacing:0.05em;">
+        ✗ Something went wrong. Please email me directly at abzy.teano@gmail.com
+      </div>
+    </form>
+
+    <script>
+      const form = document.getElementById('contact-form');
+      const btn  = document.getElementById('submit-btn');
+      const ok   = document.getElementById('form-success');
+      const err  = document.getElementById('form-error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (res.ok) {
+            ok.style.display = 'block';
+            err.style.display = 'none';
+            form.reset();
+            btn.textContent = 'Sent ✓';
+          } else {
+            throw new Error('Failed');
+          }
+        } catch {
+          err.style.display = 'block';
+          ok.style.display  = 'none';
+          btn.textContent   = 'Send Message →';
+          btn.disabled      = false;
+        }
+      });
+    </script>
   </div>
 </section>
 
